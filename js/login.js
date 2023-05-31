@@ -11,8 +11,6 @@ addJavascript('/js/security.js'); // 암복호화 함수
 addJavascript('/js/session.js'); // 세션 함수
 addJavascript('/js/cookie.js'); // 쿠키 함수
  
-
-
 function login(){
     let form = document.querySelector("#form_main");
     let id = document.querySelector("#floatingInput");
@@ -40,6 +38,22 @@ function login(){
     }
 }
 
+function login_check() {
+  // 정규 표현식을 사용하여 문자열 검색
+  function test(regex, str) {
+    return regex.test(str);
+  }
+	
+	function login_count() {
+    let login_cnt = parseInt(getCookie("login_cnt"));
+    if (isNaN(login_cnt)) {
+        login_cnt = 0;
+    }
+    login_cnt++;
+    setCookie("login_cnt", login_cnt, 30);
+    console.log("로그인 횟수: " + login_cnt);
+}
+
 function logout(){
 	session_del(); // 세션 삭제
     location.href="../index.html";
@@ -64,7 +78,13 @@ function get_id(){
 		    }
 	    } // 2중 for문 끝
 }; // 함수 끝
+		
+	var idValue = getParameters("id");
+    var regex = new RegExp("your_pattern_here", "i"); // 여기에 사용할 정규 표현식 패턴을 입력하세요	
+		
+	if (test(regex, idValue)) {	
 alert(getParameters('id') + '님 방갑습니다!');}// 메시지 창 출력
+	}
 }
 
 
