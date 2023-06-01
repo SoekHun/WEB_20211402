@@ -39,10 +39,25 @@ function login(){
 }
 
 function login_check() {
-  // 정규 표현식을 사용하여 문자열 검색
-  function test(regex, str) {
-    return regex.test(str);
+  var id = document.getElementById("id").value;
+  var password = document.getElementById("password").value;
+
+  // 이메일 형식 체크
+  if (!/^([0-9a-zA-Z.-]+)@([0-9a-zA-Z-]+)(.[0-9a-zA-Z_-]+){1,2}$/.test(id)) {
+    alert("이메일 형식이 올바르지 않습니다.");
+    return false;
   }
+
+  // 패스워드 형식 체크
+  if (!/^(.[A-Za-z])(?=.\d)(?=.[$@$!%#?&])[A-Za-z\d$@$!%*#?&]{10,}$/.test(password)) {
+    alert("패스워드 형식이 올바르지 않습니다.");
+    return false;
+  }
+
+  // 이메일과 패스워드가 모두 유효한 형인 경우
+  return true;
+}
+  
 	
 	function login_count() {
     let login_cnt = parseInt(getCookie("login_cnt"));
