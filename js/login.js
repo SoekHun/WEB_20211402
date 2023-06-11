@@ -1,4 +1,7 @@
-
+let loginFailCount = 0; // 로그인 실패 횟수
+let countdownInterval; // 카운트다운 인터벌 변수
+let remainingTime = 300; // 제한 시간 (5분)을 초 단위로 설정
+// onload= "pop_up();"
 
 function addJavascript(jsname) { // 자바스크립트 외부 연동
 	var th = document.getElementsByTagName('head')[0];
@@ -33,45 +36,65 @@ function login(){
         alert("아이디와 비밀번호를 모두 입력해주세요.");
     }	
 	else{
-		session_set(); // 세션 생성
+		 if(login_check()){
+        session_set(); // 세션 생성
         form.submit();
+        login_count(); // 로그인 횟수 체크   
+        } else {
+      loginFailCount++; // 로그인 실패 횟수 증가
+			startCountdown(); // 카운트다운 시작
+      
     }
 }
 
 function login_check() {
-  var id = document.getElementById("id").value;
-  var password = document.getElementById("password").value;
-
-  // 이메일 형식 체크
-  if (!/^([0-9a-zA-Z.-]+)@([0-9a-zA-Z-]+)(.[0-9a-zA-Z_-]+){1,2}$/.test(id)) {
-    alert("이메일 형식이 올바르지 않습니다.");
-    return false;
-  }
-
-  // 패스워드 형식 체크
-  if (!/^(.[A-Za-z])(?=.\d)(?=.[$@$!%#?&])[A-Za-z\d$@$!%*#?&]{10,}$/.test(password)) {
-    alert("패스워드 형식이 올바르지 않습니다.");
-    return false;
-  }
-
-  // 이메일과 패스워드가 모두 유효한 형인 경우
-  return true;
+  let id = document.querySelector("#floatingInput");
+    let password = document.querySelector("#floatingPassword");
+    
+    let reg = /^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,15}$/;
+    let regex = new RegExp('[a-z0-9]+@[a-z]+\.[a-z]{2,3}');
+    if(regex.test(id.value)){
+    	if(reg.test(password.value)){
+            return true;
+        }
+        else{
+            alert("영문 숫자 특수기호 조합 8자리 이상으로 입력해주세요.");
+            return false;
+            }
+    }
+    else{
+        alert("이메일 주소를 포함하여 입력해주세요");
+        return false;
+        }
 }
   
 	
+
 	function login_count() {
-    let login_cnt = parseInt(getCookie("login_cnt"));
-    if (isNaN(login_cnt)) {
-        login_cnt = 0;
-    }
-    login_cnt++;
-    setCookie("login_cnt", login_cnt, 30);
-    console.log("로그인 횟수: " + login_cnt);
+     let login_cnt = getCookie("login_cnt");
+  if(login_cnt == "") {
+    setCookie("login_cnt", 1, 1);
+  }
+  else {
+    setCookie("login_cnt", Number(login_cnt)+1, 1);
+	//alert("로그인 횟수 " + (Number(login_cnt) + 1));
+  }
 }
 
 function logout(){
 	session_del(); // 세션 삭제
+	logout_count(); 
     location.href="../index.html";
+}
+
+function logout_count() { // 로그아웃 횟수 체크
+  let logout_cnt = getCookie("logout_cnt");
+  if(logout_cnt == "") {
+    setCookie("logout_cnt", 1, 1);
+  }
+  else {
+    setCookie("logout_cnt", Number(logout_cnt)+1, 1);
+  }
 }
 
 function get_id(){
@@ -95,20 +118,72 @@ function get_id(){
 }; // 함수 끝
 		
 	var idValue = getParameters("id");
-    var regex = new RegExp("your_pattern_here", "i"); // 여기에 사용할 정규 표현식 패턴을 입력하세요	
+    var regex = new RegExp("[a-z0-9]+@[a-z]+\.[a-z]{2,3}", "i"); // 여기에 사용할 정규 표현식 패턴을 입력하세요	
 		
 	if (test(regex, idValue)) {	
 alert(getParameters('id') + '님 방갑습니다!');}// 메시지 창 출력
 	}
 }
 
+	
+function startCountdown() {
+  clearInterval(countdownInterval); // 기존 인터벌 중지
 
+  const timerElement = document.getElementById("timer");
+  timerElement.innerText = formatTime(remainingTime);
 
+  countdownInterval = setInterval(function () {
+    remainingTime--;
+    if (remainingTime <= 0) {
+      clearInterval(countdownInterval); // 카운트다운 완료 시 인터벌 중지
+      loginFailCount = 0; // 로그인 실패 횟수 초기화
+      timerElement.innerText = "로그인 제한 시간이 종료되었습니다.";
+    } else {
+      timerElement.innerText = formatTime(remainingTime);
+    }
+  }, 1000);
 
+  if (loginFailCount >= 3) {
+    // 팝업 창 열기
+    openRestrictionPage();
+  }
+}
 
+function formatTime(seconds) {
+  const minutes = Math.floor(seconds / 60);
+  const remainingSeconds = seconds % 60;
+  return `${minutes}분 ${remainingSeconds}초`;
+}
 
+window.onload = function () {
+  init(); // 초기화 함수 호출
 
+  if (loginFailCount >= 3) {
+    startCountdown();
+  }
+};
+	
+	function openPopup() {
+  // 팝업 창을 새 창으로 열기
+  window.open("logcount.html", "_blank", "width=400,height=300");
+}
+	
+	function openRestrictionPage() {
+  // logcount.html을 새 창으로 열기
+  window.open("logcount.html", "_blank", "width=400,height=300");
+}
 
-
-
+		
+function init(){ // 로그인 폼에 쿠키에서 가져온 아이디 입력
+    let id = document.querySelector("#floatingInput");
+    let check = document.querySelector("#idSaveCheck");
+    let get_id = getCookie("id");
+   
+    if(get_id) { 
+    id.value = get_id; 
+    check.checked = true; 
+    }
+	session_check(); // 세션 유무 검사
+}
+	}
 
