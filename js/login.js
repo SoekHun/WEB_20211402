@@ -5,8 +5,8 @@ let remainingTime = 300; // 제한 시간 (5분)을 초 단위로 설정
 function addJavascript(jsname) { // 자바스크립트 외부 연동
 	var th = document.getElementsByTagName('head')[0];
 	var s = document.createElement('script');
-	s.setAttribute('type','text/javascript');
-	s.setAttribute('src',jsname);
+	//s.setAttribute('type','text/javascript');
+	//s.setAttribute('src',jsname);
 	th.appendChild(s);
 }
 addJavascript('/js/security.js'); // 암복호화 함수
@@ -163,25 +163,6 @@ function formatTime(seconds) {
 window.onload = function () {
   init(); // 초기화 함수 호출
 	
-	const loginButton = document.querySelector("#loginButton");
-  loginButton.addEventListener("click", function () {
-    login();
-  });
-
-  const logoutButton = document.querySelector("#logoutButton");
-  logoutButton.addEventListener("click", function () {
-    logout();
-  });
-
-  const getIDButton = document.querySelector("#getIDButton");
-  getIDButton.addEventListener("click", function () {
-    get_id();
-  });
-
-  const popupButton = document.querySelector("#popupButton");
-  popupButton.addEventListener("click", function () {
-    openPopup();
-  });
 
   if (loginFailCount >= 3) {
     startCountdown();

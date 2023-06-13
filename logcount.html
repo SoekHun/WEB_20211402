@@ -1,18 +1,35 @@
 <!DOCTYPE html>
-<button id="loginButton">Login</button>
-<button id="logoutButton">Logout</button>
-<button id="getIDButton">Get ID</button>
-<button id="popupButton">Open Popup</button>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login Restriction</title>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login Count</title>
 </head>
 <body>
-    <h1>Login Restriction</h1>
-    <p>Your account has been temporarily locked due to multiple failed login attempts.</p>
-    <p>Please wait for the restriction to be lifted.</p>
+  <h1>Login Count</h1>
+  <p id="loginCountText">로그인 횟수: </p>
+  <p id="logoutCountText">로그아웃 횟수: </p>
+  <h2>Timer:</h2>
+  <div id="timer"></div>
+
+  <script src="/js/cookie.js"></script>
+  <script>
+    window.onload = function() {
+      displayCounts();
+    };
+
+    function displayCounts() {
+      let loginCount = getCookie("login_cnt");
+      let logoutCount = getCookie("logout_cnt");
+      let loginCountText = document.getElementById("loginCountText");
+      let logoutCountText = document.getElementById("logoutCountText");
+
+      if (loginCountText && logoutCountText) {
+        loginCountText.innerText += loginCount || "0";
+        logoutCountText.innerText += logoutCount || "0";
+      }
+    }
+  </script>
 </body>
 </html>

@@ -45,6 +45,21 @@ function session_join_set(){ //세션 저장(객체)
     }   
 }
 
+function session_join_get() {
+    if (sessionStorage) {
+        let encryptedData = sessionStorage.getItem("Session_Storage_encryted");
+        if (encryptedData) {
+            let decryptedData = decrypt_text(encryptedData); // 복호화
+            let signUpObj = JSON.parse(decryptedData); // JSON 문자열 -> 객체 변환
+            console.log(signUpObj); // 객체 내용 콘솔 출력
+        } else {
+            console.log("회원가입 데이터가 없습니다.");
+        }
+    } else {
+        alert("세션 스토리지 지원 x");
+    }
+
+
 	function session_set(){ //세션 저장(객체)    
     let id = document.querySelector("#floatingInput");
     let password = document.querySelector("#floatingPassword");
