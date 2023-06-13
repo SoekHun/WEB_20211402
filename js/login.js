@@ -1,7 +1,6 @@
 let loginFailCount = 0; // 로그인 실패 횟수
 let countdownInterval; // 카운트다운 인터벌 변수
 let remainingTime = 300; // 제한 시간 (5분)을 초 단위로 설정
-// onload= "pop_up();"
 
 function addJavascript(jsname) { // 자바스크립트 외부 연동
 	var th = document.getElementsByTagName('head')[0];
@@ -18,32 +17,33 @@ function login(){
     let form = document.querySelector("#form_main");
     let id = document.querySelector("#floatingInput");
     let password = document.querySelector("#floatingPassword");
-	let check = document.querySelector("#idSaveCheck");
+    let check = document.querySelector("#idSaveCheck");
     
     form.action = "../index_login.html";
     form.method = "get";
 	
-	if(check.checked == true) { // 아이디 체크 o
-            alert("쿠키를 저장합니다.");
-            setCookie("id", id.value, 1); // 1일 저장
-            alert("쿠키 값 :" + id.value);
-        } 
+    if(check.checked == true) { // 아이디 체크 o
+        alert("쿠키를 저장합니다.");
+        setCookie("id", id.value, 1); // 1일 저장
+        alert("쿠키 값 :" + id.value);
+    } 
     else { // 아이디 체크 x
-            setCookie("id", id.value, 0); //날짜를 0 - 쿠키 삭제
+        setCookie("id", id.value, 0); //날짜를 0 - 쿠키 삭제
     }
     
     if(id.value.length === 0 || password.value.length === 0){
         alert("아이디와 비밀번호를 모두 입력해주세요.");
     }	
-	else{
-		 if(login_check()){
-        session_set(); // 세션 생성
-        form.submit();
-        login_count(); // 로그인 횟수 체크   
-        } else {
-      loginFailCount++; // 로그인 실패 횟수 증가
-			startCountdown(); // 카운트다운 시작
-      
+    else {
+        if(login_check()){
+            session_set(); // 세션 생성
+            form.submit();
+            login_count(); // 로그인 횟수 체크   
+        } 
+        else {
+            loginFailCount++; // 로그인 실패 횟수 증가
+            startCountdown(); // 카운트다운 시작
+        }
     }
 }
 
@@ -130,6 +130,11 @@ function startCountdown() {
   clearInterval(countdownInterval); // 기존 인터벌 중지
 
   const timerElement = document.getElementById("timer");
+  if (!timerElement) {
+    console.error("timer 요소를 찾을 수 없습니다.");
+    return;
+  }
+
   timerElement.innerText = formatTime(remainingTime);
 
   countdownInterval = setInterval(function () {
@@ -145,7 +150,7 @@ function startCountdown() {
 
   if (loginFailCount >= 3) {
     // 팝업 창 열기
-    openRestrictionPage();
+    openPopup();
   }
 }
 
@@ -157,6 +162,26 @@ function formatTime(seconds) {
 
 window.onload = function () {
   init(); // 초기화 함수 호출
+	
+	const loginButton = document.querySelector("#loginButton");
+  loginButton.addEventListener("click", function () {
+    login();
+  });
+
+  const logoutButton = document.querySelector("#logoutButton");
+  logoutButton.addEventListener("click", function () {
+    logout();
+  });
+
+  const getIDButton = document.querySelector("#getIDButton");
+  getIDButton.addEventListener("click", function () {
+    get_id();
+  });
+
+  const popupButton = document.querySelector("#popupButton");
+  popupButton.addEventListener("click", function () {
+    openPopup();
+  });
 
   if (loginFailCount >= 3) {
     startCountdown();
@@ -168,10 +193,6 @@ window.onload = function () {
   window.open("logcount.html", "_blank", "width=400,height=300");
 }
 	
-	function openRestrictionPage() {
-  // logcount.html을 새 창으로 열기
-  window.open("logcount.html", "_blank", "width=400,height=300");
-}
 
 		
 function init(){ // 로그인 폼에 쿠키에서 가져온 아이디 입력
@@ -185,5 +206,5 @@ function init(){ // 로그인 폼에 쿠키에서 가져온 아이디 입력
     }
 	session_check(); // 세션 유무 검사
 }
-	}
+	
 
