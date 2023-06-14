@@ -1,26 +1,3 @@
-
-function session_check() { //세션 검사
-    if (sessionStorage.getItem("Session_Storage_test")) {
-        alert("이미 로그인 되었습니다.");
-        location.href='index_login.html'; // 로그인된 페이지로 이동
-    }
-}
-
-//function session_set() 
-//{ 세션 저장
-    //let id = document.querySelector("#floatingInput");
-	//let password = document.querySelector("#floatingPassword");
-
-    //if (sessionStorage)
-	//{
-	//	let en_text = encrypt_text(password.value);
-	//	sessionStorage.setItem("Session_Storage_test", en_text);
-    //} 
-	//else 
-	//{
-    //    alert("로컬 스토리지 지원 x");
-    //}
-//}
 function session_join_set(){ //세션 저장(객체)    
     let f_name = document.querySelector("#firstName").value;
     let l_name = document.querySelector("#lastName").value;
@@ -45,22 +22,7 @@ function session_join_set(){ //세션 저장(객체)
     }   
 }
 
-function session_join_get() {
-    if (sessionStorage) {
-        let encryptedData = sessionStorage.getItem("Session_Storage_encryted");
-        if (encryptedData) {
-            let decryptedData = decrypt_text(encryptedData); // 복호화
-            let signUpObj = JSON.parse(decryptedData); // JSON 문자열 -> 객체 변환
-            console.log(signUpObj); // 객체 내용 콘솔 출력
-        } else {
-            console.log("회원가입 데이터가 없습니다.");
-        }
-    } else {
-        alert("세션 스토리지 지원 x");
-    }
-
-
-	function session_set(){ //세션 저장(객체)    
+function session_set(){ //세션 저장(객체)    
     let id = document.querySelector("#floatingInput");
     let password = document.querySelector("#floatingPassword");
     let random = new Date(); // 랜덤 타임스탬프
@@ -69,8 +31,8 @@ function session_join_get() {
     id : id.value,
     otp : random
     }
-
-	if (sessionStorage) {
+    
+    if (sessionStorage) {
         const objString = JSON.stringify(obj); // 객체 -> JSON 문자열 변환
         let en_text = encrypt_text(objString); // 암호화
         sessionStorage.setItem("Session_Storage_object", objString);
@@ -80,6 +42,21 @@ function session_join_get() {
     }   
 }
 
+//function session_set() 
+//{ 세션 저장
+    //let id = document.querySelector("#floatingInput");
+	//let password = document.querySelector("#floatingPassword");
+
+    //if (sessionStorage)
+	//{
+	//	let en_text = encrypt_text(password.value);
+	//	sessionStorage.setItem("Session_Storage_test", en_text);
+    //} 
+	//else 
+	//{
+    //    alert("로컬 스토리지 지원 x");
+    //}
+//}
 
 function session_get() { //세션 읽기
     if (sessionStorage) {
@@ -88,7 +65,12 @@ function session_get() { //세션 읽기
         alert("세션 스토리지 지원 x");
     }
 }
-
+function session_check() { //세션 검사
+    if (sessionStorage.getItem("Session_Storage_test")) {
+        alert("이미 로그인 되었습니다.");
+        location.href='index_login.html'; // 로그인된 페이지로 이동
+    }
+}
 function session_del() {//세션 삭제
     // Check if the sessionStorage object exists
     if (sessionStorage) {

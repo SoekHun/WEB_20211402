@@ -11,12 +11,13 @@
   <p id="loginCountText">로그인 횟수: </p>
   <p id="logoutCountText">로그아웃 횟수: </p>
   <h2>Timer:</h2>
-  <div id="timer"></div>
+  <div id="timer" class="clock"></div>
 
   <script src="/js/cookie.js"></script>
   <script>
     window.onload = function() {
-      displayCounts();
+      
+		startCountdown();
     };
 
     function displayCounts() {
